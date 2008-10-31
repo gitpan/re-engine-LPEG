@@ -1,0 +1,9 @@
+Revision history for Perl extension re::engine::LPEG.
+
+0.02  Fri Oct 31 17:30:00 2008
+	- first release (without capture)
+
+0.01  Tue Aug 12 05:28:14 2008
+	- original version; created by h2xs 1.23 with options
+		-n re::engine::LPEG
+
