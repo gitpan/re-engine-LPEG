@@ -1,5 +1,8 @@
 Revision history for Perl extension re::engine::LPEG.
 
+0.03  Sun Nov  2 14:30:00 2008
+	- add capture simple
+
 0.02  Fri Oct 31 17:30:00 2008
 	- first release (without capture)
 

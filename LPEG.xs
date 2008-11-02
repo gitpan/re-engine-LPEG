@@ -22,9 +22,16 @@ static lua_State *L; /* Lua interpreter instance */
 
 /* definitions from lpeg.c */
 
+/* initial size for capture's list */
 #define IMAXCAPTURES	600
 
 typedef unsigned char byte;
+
+/* kinds of captures */
+typedef enum CapKind {
+  Cclose, Cposition, Cconst, Cbackref, Carg, Csimple, Ctable, Cfunction,
+  Cquery, Cstring, Csubst, Cfold, Cruntime, Cgroup
+} CapKind;
 
 typedef struct Capture {
   const char *s;  /* position */
@@ -32,6 +39,10 @@ typedef struct Capture {
   byte kind;
   byte siz;
 } Capture;
+
+#define captype(cap)	((cap)->kind)
+
+#define isclosecap(cap)	(captype(cap) == Cclose)
 
 extern const char *match (lua_State *L,
                           const char *o, const char *s, const char *e,
@@ -122,6 +133,7 @@ LPEG_exec(pTHX_ REGEXP * const rx, char *stringarg, char *strend,
     warn("LPEG_exec |%s|%s|\n", stringarg, rx->precomp);
 #endif
 
+    memset(capture, 0, sizeof capture);
     lua_pushnil(L);  /* subscache */
     lua_pushlightuserdata(L, capture);  /* caplistidx */
     lua_getfenv(L, 1);  /* penvidx */
@@ -140,6 +152,17 @@ LPEG_exec(pTHX_ REGEXP * const rx, char *stringarg, char *strend,
         rx->subbeg = strbeg;
         rx->sublen = strend - strbeg;
 
+        if (!isclosecap(&capture[0])) {
+            Capture *c;
+            for (c = &capture[0]; !isclosecap(c); c++) {
+               switch (captype(c)) {
+               case Csimple:
+                   n++;
+                   break;
+               }
+            }
+        }
+
         rx->nparens = rx->lastparen = rx->lastcloseparen = n;
         Newxz(rx->offs, n + 1, regexp_paren_pair);
 
@@ -149,6 +172,24 @@ LPEG_exec(pTHX_ REGEXP * const rx, char *stringarg, char *strend,
 #ifdef DEBUG
         warn("match (%d) [%d-%d]\n", n, rx->offs[0].start, rx->offs[0].end);
 #endif
+
+        if (n) {
+            Capture *c;
+            unsigned i = 1;
+            for (c = &capture[0]; !isclosecap(c); c++) {
+               switch (captype(c)) {
+               case Csimple:
+                   rx->offs[i].start = c->s - stringarg;
+                   rx->offs[i].end   = rx->offs[i].start + c->siz - 1;
+#ifdef DEBUG
+                   warn("capt %d [%d-%d]\n", i, rx->offs[i].start, rx->offs[i].end);
+#endif
+                   i++;
+                   break;
+               }
+            }
+        }
+
         return 1;
     }
 }

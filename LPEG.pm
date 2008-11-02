@@ -7,7 +7,7 @@ our @ISA = 'Regexp';
 
 BEGIN
 {
-    $VERSION = '0.02';
+    $VERSION = '0.03';
     XSLoader::load __PACKAGE__, $VERSION;
 }
 
@@ -57,7 +57,7 @@ Spaces are not significatives.
 =item *
 
 LPeg works only in I<anchored> mode.
-So LPeg is unusable with C<split>.
+So LPeg is unusable with C<split>, and not suitable for C<s///>.
 
 =item *
 
@@ -70,10 +70,6 @@ Pre-defined character classes start by C<'%'> (like in the Lua string library).
 See L<http://www.lua.org/manual/5.1/manual.html#5.4.1>.
 
 =back
-
-=head1 TODO
-
-Add the support of captures.
 
 =head1 AUTHORS
 

@@ -6,7 +6,6 @@ use File::Basename;
 use File::Compare;
 use File::Copy;
 use File::Path;
-use LWP::UserAgent;
 use Archive::Extract;
 
 my %files = (
@@ -20,18 +19,24 @@ my %files = (
     },
 );
 
-my $ua = new LWP::UserAgent();
-$ua->env_proxy();
 
 foreach my $url (keys %files) {
     my $filename = basename( $url );
     unless (-f $filename) {
         warn "retrieving $filename\n";
-        my $request = new HTTP::Request( 'GET', $url );
-        my $response = $ua->request( $request, $filename );
-        die "Error while getting ", $response->request->uri, " -- ",
-                                    $response->status_line, "\nAborting"
-                if ($response->is_error);
+        eval "use LWP::UserAgent;";
+        unless ($@) {
+            my $ua = new LWP::UserAgent();
+            $ua->env_proxy();
+            my $request = new HTTP::Request( 'GET', $url );
+            my $response = $ua->request( $request, $filename );
+            die "Error while getting ", $response->request->uri, " -- ",
+                                        $response->status_line, "\nAborting"
+                    if ($response->is_error);
+        }
+        else {
+            system("wget $filename") == 0 or die "can't retrieve $filename";
+        }
     }
     my $dirname = basename( $filename, '.tar.gz' );
     unless (-d $dirname) {
@@ -40,10 +45,10 @@ foreach my $url (keys %files) {
         $ae->extract();
     }
     while (my ($pat, $dest) = each %{$files{$url}}) {
-	mkpath($dest) unless (-d $dest);
-	foreach my $src (glob("$dirname/$pat")) {
-	    copy($src, $dest . '/' . basename($src));
-	}
+        mkpath($dest) unless (-d $dest);
+        foreach my $src (glob("$dirname/$pat")) {
+            copy($src, $dest . '/' . basename($src));
+        }
     }
 }
 
