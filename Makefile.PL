@@ -80,6 +80,9 @@ WriteMakefile(
     LICENSE       => 'MIT',
     DIR           => [ 'liblua', 'liblpeg' ],
     INC           => '-Iliblua',
+    PREREQ_PM     => {
+            'Test::Warn'        => 0,
+    },
 
     # This used to be '-shared lib*/*.o' but that doesn't work on Win32
     LDDLFLAGS     => "-shared @OBJ",

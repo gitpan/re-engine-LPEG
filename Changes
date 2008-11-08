@@ -1,5 +1,9 @@
 Revision history for Perl extension re::engine::LPEG.
 
+0.04  Sat Nov  8 11:30:00 2008
+	- Test::Warn is required
+	- no behavior change
+
 0.03  Sun Nov  2 14:30:00 2008
 	- add capture simple
 
