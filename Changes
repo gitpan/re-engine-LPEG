@@ -1,5 +1,8 @@
 Revision history for Perl extension re::engine::LPEG.
 
+0.05  Fri Jul  9 17:30:00 2010
+	- fix build with Cygwin (patch from Reini Urban)
+
 0.04  Sat Nov  8 11:30:00 2008
 	- Test::Warn is required
 	- no behavior change

@@ -7,7 +7,7 @@ our @ISA = 'Regexp';
 
 BEGIN
 {
-    $VERSION = '0.04';
+    $VERSION = '0.05';
     XSLoader::load __PACKAGE__, $VERSION;
 }
 
@@ -39,6 +39,9 @@ re::engine::LPEG - LPEG regular expression engine
     }
 
 =head1 DESCRIPTION
+
+THIS MODULE IS A FAILURE.
+THE re-engine INTERFACE IS NOT THE RIGHT WAY TO WRAP LPeg.
 
 Replaces perl's regex engine in a given lexical scope with the LPeg one.
 

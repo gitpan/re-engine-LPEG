@@ -85,6 +85,6 @@ WriteMakefile(
     },
 
     # This used to be '-shared lib*/*.o' but that doesn't work on Win32
-    LDDLFLAGS     => "-shared @OBJ",
+    LDDLFLAGS     => "-shared \$(LDFLAGS) @OBJ",
 );
 

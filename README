@@ -1,5 +1,8 @@
-re-engine-LPEG version 0.04
+re-engine-LPEG version 0.05
 ===========================
+
+    THIS MODULE IS A FAILURE.
+    THE re-engine INTERFACE IS NOT THE RIGHT WAY TO WRAP LPeg.
 
 INSTALLATION
 
